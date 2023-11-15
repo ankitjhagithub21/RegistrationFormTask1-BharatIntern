@@ -40,4 +40,9 @@ var confirmInput = document.getElementById('cpassword');
 showPasswordCheckbox.addEventListener('change', function () {
     passwordInput.type = this.checked ? 'text' : 'password';
     confirmInput.type = this.checked ? 'text' : 'password';
+    setTimeout(()=>{
+        this.checked=false;
+        passwordInput.type='password';
+        confirmInput.type='password';
+    },1000)
 });
