@@ -18,12 +18,11 @@ myForm.addEventListener('submit', async (e) => {
                 },
                 body: JSON.stringify({ username, email, password, cpassword }),
             });
+            
 
-            console.log(response.status);
-
-            if (response.status >= 200 && response.status < 300) {
+            if (response.status ==201) {
                 alert('Registration successful!');
-                window.location.reload()
+
             } else {
                 const data = await response.json();
                 alert(data.message);
