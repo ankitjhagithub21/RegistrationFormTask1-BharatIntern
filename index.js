@@ -1,7 +1,7 @@
 const express = require('express')
 const path = require('path')
 const app = express()
-const connectDb = require("./dbconnection")
+const connectDb = require("./dbconnection.js")
 const port = process.env.PORT || 3000
 const User = require("./models/userModel.js")
 //database connection
