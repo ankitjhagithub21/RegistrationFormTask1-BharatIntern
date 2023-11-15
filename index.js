@@ -4,6 +4,8 @@ const app = express()
 const connectDb = require("./dbconnection.js")
 const port = process.env.PORT || 3000
 const User = require("./models/userModel.js")
+const bcrypt = require('bcrypt');
+const saltRounds = 10;
 //database connection
 connectDb()
 
@@ -12,9 +14,11 @@ app.use(express.json())
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, 'public')))
 
-app.get("/",(req,res)=>{
-    res.send("index.html")
-})
+app.get("/", (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
+
+
 app.post("/register",async(req,res)=>{
     const {username,email,password,cpassword} = req.body
     if(!username || !email || !password || !cpassword){
@@ -24,25 +28,23 @@ app.post("/register",async(req,res)=>{
         if(isExist){
             return res.status(400).send({"message":"Email already exist"})
         }
-        try{
-        
-            if(password!==cpassword){
-                res.status(400).send({"message":"Password does not match"})
-            }else{
-                const user = await new User({
-                    name:username,
+        try {
+            if (password !== cpassword) {
+                res.status(400).send({"message": "Password does not match"});
+            } else {
+                const hashedPassword = await bcrypt.hash(password, saltRounds);
+                const user = new User({
+                    name: username,
                     email,
-                    password,
-                    cpassword
-                })
-                await user.save()
-                res.status(201).send({"message":"Registration successfull"}) 
-                
+                    password: hashedPassword,
+                    cpassword: hashedPassword // You might not need to store cpassword
+                });
+                await user.save();
+                res.status(201).send({"message": "Registration successful"});
             }
-    
-        }catch(err){
-            console.log(err)
-            res.status(500).send(err)
+        } catch (err) {
+            console.error(err);
+            res.status(500).send({"message": "Internal Server Error"});
         }
     }
     
