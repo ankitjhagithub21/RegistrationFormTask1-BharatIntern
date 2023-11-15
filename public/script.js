@@ -22,7 +22,7 @@ myForm.addEventListener('submit', async (e) => {
 
             if (response.status ==201) {
                 alert('Registration successful!');
-
+                myForm.reset()
             } else {
                 const data = await response.json();
                 alert(data.message);
